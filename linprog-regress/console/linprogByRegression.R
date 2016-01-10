@@ -3,7 +3,7 @@ library("XLConnect")
 library("modopt.matlab")
 
 #### get Excel worksheet
-filePath <- "/home/hamsternik/1. University/5 semestr/operation research/kursach/code/data/Ukraine.xlsx"
+filePath <- "/home/hamsternik/1. University/5 semestr/operation research/kursach/code/linprog-regress/data/Ukraine.xlsx"
 rawExcelmainMatrix <- readWorksheet(loadWorkbook(filePath), sheet = 2)
 rawExcelmainMatrix <- rawExcelmainMatrix[-1,] # remove line with variable names
 
