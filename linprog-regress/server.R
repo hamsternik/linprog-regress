@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
     }
         
     mapOfNames.df <- dataFrameFromTwoLists(columnNames, variableNames)
-    return(mapOfNames.df)
+    return(mapOfNames.df$parameters)
   })
   
   criterionVariablesNumberDataInput <- reactive({
@@ -96,9 +96,10 @@ shinyServer(function(input, output, session) {
   })
   
   mainMatrixDataInput <- reactive({
-    mainMatrix <- matrix()
     rawExcelmainMatrix <- rawExcelDataInput()
     mapOfNames <- mapOfNamesDataInput()
+    
+    mainMatrix <- matrix()
     
     for (i in 1:(criterionVariablesNumberDataInput() + stateVariablesNumberDataInput() + controlVariablesNumberDataInput())) {
       if ((i > criterionVariablesNumberDataInput()) && (i <= (criterionVariablesNumberDataInput() + stateVariablesNumberDataInput()))) {
@@ -119,6 +120,26 @@ shinyServer(function(input, output, session) {
     }
     
     return(mainMatrix)
+  })
+  
+  additionMatrixDataInput <- reactive({
+    rawExcelmainMatrix <- rawExcelDataInput()
+    mapOfNames <- mapOfNamesDataInput()
+    mainMatrix <- mainMatrixDataInput()
+    
+    additionMatrix <- c()
+    
+    for (i in 1:(criterionVariablesNumberDataInput() + stateVariablesNumberDataInput()))
+      additionMatrix <- cbind(additionMatrix, mainMatrix[,i])
+    additionMatrix <- additionMatrix[-(dim(additionMatrix)[1]),]
+    additionMatrix <- rbind(rep(1, (dim(additionMatrix)[2])), additionMatrix)
+    
+    return(additionMatrix)
+  })
+  
+  extendedMatrixDataInput <- reactive({
+    extendedMatrix <- cbind(additionMatrixDataInput(), mainMatrixDataInput())
+    return(extendedMatrix)
   })
   
   ################################################################################################

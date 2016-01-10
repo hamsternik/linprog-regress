@@ -92,6 +92,7 @@ additionMatrix <- cbind(additionMatrix, as.numeric(rawExcelmainMatrix[[mapOfName
 additionMatrix <- cbind(additionMatrix, as.numeric(rawExcelmainMatrix[[mapOfNames[[stateVariables[3]]]]]))
 additionMatrix <- cbind(additionMatrix, as.numeric(rawExcelmainMatrix[[mapOfNames[[stateVariables[4]]]]]))
 additionMatrix <- cbind(additionMatrix, as.numeric(rawExcelmainMatrix[[mapOfNames[[stateVariables[5]]]]]))
+
 additionMatrix <- additionMatrix[-(dim(additionMatrix)[1]),]
 additionMatrix <- rbind(rep(1, (dim(additionMatrix)[2])), additionMatrix)
 ### 
