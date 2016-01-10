@@ -11,14 +11,14 @@ shinyUI(pageWithSidebar(
                          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                          '.xls',
                          '.xlsx')),
-    
     tags$hr()
   ),
   
   mainPanel(
     tabsetPanel(
-      tabPanel("Summary", verbatimTextOutput("summary")),
-      tabPanel("Table", tableOutput("excelTable"))
+      tabPanel("Table", tableOutput("excelTable")),
+      tabPanel("Variable Control", uiOutput("criterion"), uiOutput("state"), uiOutput("control")),
+      tabPanel("New Tab", uiOutput("input_ui"))
     )
   )
 ))

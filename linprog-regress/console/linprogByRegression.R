@@ -22,6 +22,8 @@ for (i in 1:length(rawExcelmainMatrix)) {
   mapOfNames[[variableNames[i]]] <- columnNames[i]
 }
 
+mapOfNames.df <- dataFrameFromTwoLists(columnNames, variableNames)
+
 #### criterion variables
 criterionVariablesNumber <- as.numeric(readline("Enter number of criterion variables: "))
 criterionVariables <- c()
@@ -204,7 +206,6 @@ print("Print coeficients from state variables regression")
 stateRegress <- stateRegress[,1:(stateVariablesNumber + controlVariablesNumber)]
 #print(stateRegress)
 ###
-
 
 ### coefficients of criterion and state variables
 sol <- linprog(f = criterionRegress, 
