@@ -9,8 +9,8 @@ shinyUI(pageWithSidebar(
     fileInput('file1', 'Choose Excel file', 
               accept = c('application/vnd.ms-excel',
                          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                         '.xls',
-                         '.xlsx')),
+                         '.xlsx',
+                         '.xls')),
     tags$hr()
   ),
   
@@ -18,7 +18,8 @@ shinyUI(pageWithSidebar(
     tabsetPanel(
       tabPanel("Table", tableOutput("excelTable")),
       tabPanel("Variable Control", uiOutput("criterion"), uiOutput("state"), uiOutput("control")),
-      tabPanel("New Tab", uiOutput("input_ui"))
+      tabPanel("Result", uiOutput("optimumResult")),
+      tabPanel("Plot", uiOutput("optimumPlot"))
     )
   )
 ))
