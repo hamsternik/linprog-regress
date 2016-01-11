@@ -17,7 +17,11 @@ shinyUI(pageWithSidebar(
   mainPanel(
     tabsetPanel(
       tabPanel("Table", tableOutput("excelTable")),
-      tabPanel("Variable Control", uiOutput("criterion"), uiOutput("state"), uiOutput("control")),
+      tabPanel("Variable Control", 
+               fluidRow(
+                 column(5, uiOutput("criterion"), uiOutput("state"), uiOutput("control")),
+                 column(4, textOutput("timeLineTitle"), uiOutput("timeLine"))
+      )),
       tabPanel("Result", uiOutput("optimumResult")),
       tabPanel("Plot", uiOutput("optimumPlot"))
     )

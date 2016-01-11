@@ -219,6 +219,43 @@ shinyServer(function(input, output, session) {
     return(answer)
   })
   
+  timePointDataInput <- reactive({
+    timeLine <- input$timeLine1
+    additionMatrix <- additionMatrixDataInput()
+    answer <- additionMatrix[timeLine, ]
+    
+    return(answer)
+  })
+  
+  
+  modifiedCriterionRegressConstantsDataInput <- reactive({
+    parametrsBefore <- (criterionRegressDataInput()$first)[(controlVariablesNumberDataInput() + 1):length(criterionRegressDataInput()$first)]
+    criterionRegressConstants <- (timePointDataInput() %*% parametrsBefore) + (criterionRegressDataInput()$second)
+    
+    return(criterionRegressConstants)
+  })
+  
+  criterionRegressForLP <- reactive({
+    criterionRegressLP <- (criterionRegressDataInput()$first)[,1:controlVariablesNumberDataInput()]
+    criterionRegressLP <- append(criterionRegressLP, rep(0, stateVariablesNumberDataInput()))
+    
+    return(criterionRegressLP)
+  })
+  
+  modifiedStateRegressConstantsDataInput <- reactive({
+    lastStateConstantVec <- c()
+    stateRegressPartOfConstantValues <- (stateRegressDataInput()$first)[,( ((dim((stateRegressDataInput()$first)))[2]) - (dim(additionMatrixDataInput())[2]) + 1 ):(dim((stateRegressDataInput()$first)))[2]]
+    for (i in 1:dim(stateRegressPartOfConstantValues)[1]) {
+      lastStateConstantVec <- append(lastStateConstantVec, ((timePointDataInput() %*% stateRegressPartOfConstantValues[i,]) + stateRegressConstants[i]))
+    }
+    
+    return(lastStateConstantVec)
+  })
+  
+  stateRegressForLP <- reactive({
+    return((stateRegressDataInput()$first)[,1:(stateVariablesNumberDataInput() + controlVariablesNumberDataInput())])
+  })
+  
   ################################################################################################
   
   output$excelTable <- renderTable({
@@ -234,10 +271,16 @@ shinyServer(function(input, output, session) {
   output$control <- renderUI({
     selectizeInput('cl', 'Control Variables', choices = mapOfNamesAsDataFrameDataInput(), multiple = TRUE)
   })
+  output$timeLine <- renderUI({
+    numericInput('timeLine1', '', 2, 2, (dim(rawExcelDataInput()))[1])
+  })
+  output$timeLineTitle <- renderText({
+    #str1 <- paste("Enter number of concrete time from ", (dim(mainMatrix)[1]), " all time: ")
+    print("Enter number of concrete time from all time")
+  })
   
-  output$optimumResult <- renderText ({
+  output$optimumResult <- renderTable ({
     ## TODO
-    stateRegressDataInput()$second
   })
   
 })
