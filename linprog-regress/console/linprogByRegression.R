@@ -2,6 +2,8 @@ library("Rglpk")
 library("XLConnect")
 library("modopt.matlab")
 
+source("/home/hamsternik/1. University/5 semestr/operation research/kursach/code/linprog-regress/dataFrameFromTwoLists.R")
+
 #### get Excel worksheet
 filePath <- "/home/hamsternik/1. University/5 semestr/operation research/kursach/code/linprog-regress/data/Ukraine.xlsx"
 rawExcelmainMatrix <- readWorksheet(loadWorkbook(filePath), sheet = 2)

@@ -122,16 +122,16 @@ shinyServer(function(input, output, session) {
     return(mainMatrix)
   })
   
-  constrainsDataInput <- reactive({
-    stateAndControlVecOfConstrains <- c()
-    for (i in (criterionVariablesNumberDataInput() + 1)
-         :(criterionVariablesNumberDataInput() + stateVariablesNumberDataInput() + controlVariablesNumberDataInput())) {
-      stateAndControlVecOfConstrains <- rbind(stateAndControlVecOfConstrains, c(min(mainMatrixDataInput()[,i]), max(mainMatrixDataInput()[,i])))
-    }
-    
-    colnames(stateAndControlVecOfConstrains) <- c("min", "max")
-    return(stateAndControlVecOfConstrains)
-  })
+#   constrainsDataInput <- reactive({
+#     stateAndControlVecOfConstrains <- c()
+#     for (i in (criterionVariablesNumberDataInput() + 1)
+#          :(criterionVariablesNumberDataInput() + stateVariablesNumberDataInput() + controlVariablesNumberDataInput())) {
+#       stateAndControlVecOfConstrains <- rbind(stateAndControlVecOfConstrains, c(min(mainMatrixDataInput()[,i]), max(mainMatrixDataInput()[,i])))
+#     }
+#     
+#     colnames(stateAndControlVecOfConstrains) <- c("min", "max")
+#     return(stateAndControlVecOfConstrains)
+#   })
   
   additionMatrixDataInput <- reactive({
     rawExcelmainMatrix <- rawExcelDataInput()
@@ -169,7 +169,17 @@ shinyServer(function(input, output, session) {
       criterionRegress <- rbind(criterionRegress, criterionRegressFitFunction$coefficients)
     }
     
-    return(as.vector(criterionRegress))
+    return(criterionRegress)
+  })
+  
+  criterionRegressConstantsDataInput <- reactive({
+    criterionRegressConstants <- c()
+    for (i in 1:((dim(criterionRegressDataInput()))[1])) {
+      f = criterionRegressDataInput()[i,]
+      criterionRegressConstants <- append(criterionRegressConstants, mean(yCriterion) - t(apply(X, 2, mean))%*%t(t(f)))
+    }
+    
+    return(criterionRegressConstants)
   })
   
   ################################################################################################
@@ -190,7 +200,6 @@ shinyServer(function(input, output, session) {
   
   output$optimumResult <- renderPrint({
     ## TODO
-    print(criterionRegressDataInput())
   })
   
 })
