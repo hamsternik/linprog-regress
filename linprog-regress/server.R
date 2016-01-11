@@ -169,18 +169,58 @@ shinyServer(function(input, output, session) {
       criterionRegress <- rbind(criterionRegress, criterionRegressFitFunction$coefficients)
     }
     
-    return(criterionRegress)
-  })
-  
-  criterionRegressConstantsDataInput <- reactive({
     criterionRegressConstants <- c()
-    for (i in 1:((dim(criterionRegressDataInput()))[1])) {
-      f = criterionRegressDataInput()[i,]
+    for (i in 1:((dim(criterionRegress))[1])) {
+      f = criterionRegress[i,]
       criterionRegressConstants <- append(criterionRegressConstants, mean(yCriterion) - t(apply(X, 2, mean))%*%t(t(f)))
     }
     
-    return(criterionRegressConstants)
+    answer <- list(first = criterionRegress, second = criterionRegressConstants)
+    return(answer)
   })
+  
+#   stateRegressDataInput <- reactive({
+#     stateRegress <- c()
+#     for (i in (criterionVariablesNumberDataInput() + 1):(criterionVariablesNumberDataInput() + stateVariablesNumberDataInput())) {
+#       X <- c()
+#       
+#       for (j in (criterionVariablesNumberDataInput() + 1):(criterionVariablesNumberDataInput() + stateVariablesNumberDataInput())) {
+#         if (j != i)
+#           X <- cbind(X, mainMatrixDataInput()[,j])
+#         else
+#           X <- cbind(X, rep(0, dim(mainMatrixDataInput())[1])) 
+#       }
+#       
+#       for (j in (criterionVariablesNumberDataInput() + stateVariablesNumberDataInput() + 1)
+#            :(criterionVariablesNumberDataInput() + stateVariablesNumberDataInput() + controlVariablesNumberDataInput())) {
+#         X <- cbind(X, mainMatrixDataInput()[, j])
+#       }
+#       
+#       X <- cbind(X, additionMatrixDataInput())
+#       
+#       yState <- t(t(mainMatrixDataInput()[, i]))
+#       
+#       stateRegressFitFunction <- lm.fit(X, yState)
+#       stateRegress <- rbind(stateRegress, stateRegressFitFunction$coefficients)
+#     }
+#     
+#     for (i in 1:dim(stateRegress)[1])
+#       for (j in 1:dim(stateRegress)[2])
+#         if (is.na(stateRegress[i,j]))
+#           stateRegress[i,j] <- 0
+#     
+#     return(stateRegress)
+#   })
+#   
+#   stateRegressConstantsDataInput <- reactive({
+#     stateRegressConstants <- c()
+#     for (i in 1:((dim(stateRegressConstantsDataInput()))[1])) {
+#       f = stateRegressConstantsDataInput()[i,]
+#       stateRegressConstants <- append(stateRegressConstants, mean(yState) - t(apply(X, 2, mean))%*%t(t(f)))
+#     }
+#     
+#     return(stateRegressConstants)
+#   })
   
   ################################################################################################
   
