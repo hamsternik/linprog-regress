@@ -198,7 +198,7 @@ stateRegressPartOfConstantValues <- stateRegress[,( ((dim(A))[2]) - (dim(additio
 for (i in 1:dim(stateRegressPartOfConstantValues)[1]) {
   lastStateConstantVec <- append(lastStateConstantVec, ((concretePartOfTime %*% stateRegressPartOfConstantValues[i,]) + stateRegressConstants[i]))
 }
-print("Print coeficients from state variables regression")
+#print("Print coeficients from state variables regression")
 #print(lastStateConstantVec)
 ###
 
