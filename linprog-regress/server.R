@@ -122,6 +122,17 @@ shinyServer(function(input, output, session) {
     return(mainMatrix)
   })
   
+  constrainsDataInput <- reactive({
+    stateAndControlVecOfConstrains <- c()
+    for (i in (criterionVariablesNumberDataInput() + 1)
+         :(criterionVariablesNumberDataInput() + stateVariablesNumberDataInput() + controlVariablesNumberDataInput())) {
+      stateAndControlVecOfConstrains <- rbind(stateAndControlVecOfConstrains, c(min(mainMatrixDataInput()[,i]), max(mainMatrixDataInput()[,i])))
+    }
+    
+    colnames(stateAndControlVecOfConstrains) <- c("min", "max")
+    return(stateAndControlVecOfConstrains)
+  })
+  
   additionMatrixDataInput <- reactive({
     rawExcelmainMatrix <- rawExcelDataInput()
     mapOfNames <- mapOfNamesDataInput()
@@ -142,6 +153,25 @@ shinyServer(function(input, output, session) {
     return(extendedMatrix)
   })
   
+  criterionRegressDataInput <- reactive({
+    criterionRegress <- c()
+    for (i in 1:criterionVariablesNumberDataInput()) {
+      X <- c()
+      
+      for (j in 1:controlVariablesNumberDataInput())
+        X <- cbind(X, mainMatrixDataInput()[,criterionVariablesNumberDataInput() + stateVariablesNumberDataInput() + j])
+      
+      X <- cbind(X, additionMatrixDataInput())
+      
+      yCriterion <- t(t(mainMatrixDataInput()[, i]))
+      
+      criterionRegressFitFunction <- lm.fit(X, yCriterion)
+      criterionRegress <- rbind(criterionRegress, criterionRegressFitFunction$coefficients)
+    }
+    
+    return(as.vector(criterionRegress))
+  })
+  
   ################################################################################################
   
   output$excelTable <- renderTable({
@@ -160,6 +190,7 @@ shinyServer(function(input, output, session) {
   
   output$optimumResult <- renderPrint({
     ## TODO
+    print(criterionRegressDataInput())
   })
   
 })

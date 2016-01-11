@@ -107,9 +107,6 @@ criterionRegress <- c()
 for (i in 1:criterionVariablesNumber) {
   X <- c()
   
-#   for (j in 1:stateVariablesNumber)
-#     X <- cbind(X, mainMatrix[, criterionVariablesNumber+j])
-  
   for (j in 1:controlVariablesNumber)
     X <- cbind(X, mainMatrix[,criterionVariablesNumber+stateVariablesNumber+j])
   
