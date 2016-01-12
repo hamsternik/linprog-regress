@@ -122,16 +122,16 @@ shinyServer(function(input, output, session) {
     return(mainMatrix)
   })
   
-#   constrainsDataInput <- reactive({
-#     stateAndControlVecOfConstrains <- c()
-#     for (i in (criterionVariablesNumberDataInput() + 1)
-#          :(criterionVariablesNumberDataInput() + stateVariablesNumberDataInput() + controlVariablesNumberDataInput())) {
-#       stateAndControlVecOfConstrains <- rbind(stateAndControlVecOfConstrains, c(min(mainMatrixDataInput()[,i]), max(mainMatrixDataInput()[,i])))
-#     }
-#     
-#     colnames(stateAndControlVecOfConstrains) <- c("min", "max")
-#     return(stateAndControlVecOfConstrains)
-#   })
+  constrainsDataInput <- reactive({
+    stateAndControlVecOfConstrains <- c()
+    for (i in (criterionVariablesNumberDataInput() + 1)
+         :(criterionVariablesNumberDataInput() + stateVariablesNumberDataInput() + controlVariablesNumberDataInput())) {
+      stateAndControlVecOfConstrains <- rbind(stateAndControlVecOfConstrains, c(min(mainMatrixDataInput()[,i]), max(mainMatrixDataInput()[,i])))
+    }
+    
+    colnames(stateAndControlVecOfConstrains) <- c("min", "max")
+    return(stateAndControlVecOfConstrains)
+  })
   
   additionMatrixDataInput <- reactive({
     rawExcelmainMatrix <- rawExcelDataInput()
@@ -256,6 +256,21 @@ shinyServer(function(input, output, session) {
     return((stateRegressDataInput()$first)[,1:(stateVariablesNumberDataInput() + controlVariablesNumberDataInput())])
   })
   
+  linprogDataInput <- reactive({
+    lp <- linprog(f = criterionRegressForLP(),
+                   A = stateRegressForLP(),
+                   b = -modifiedStateRegressConstantsDataInput(),
+                   Aeq = c(), 
+                   beq = c(), 
+                   lb = constrainsDataInput()[,"min"], 
+                   ub = constrainsDataInput()[,"max"])
+    return(lp$x)
+  })
+  
+  optimumCriterionDataInput <- reactive({
+    return(as.numeric(linprogDataInput() %*% criterionRegressForLP() + modifiedCriterionRegressConstantsDataInput()))
+  })
+  
   ################################################################################################
   
   output$excelTable <- renderTable({
@@ -274,13 +289,14 @@ shinyServer(function(input, output, session) {
   output$timeLine <- renderUI({
     numericInput('timeLine1', '', 2, 2, (dim(rawExcelDataInput()))[1])
   })
+  
   output$timeLineTitle <- renderText({
     #str1 <- paste("Enter number of concrete time from ", (dim(mainMatrix)[1]), " all time: ")
     print("Enter number of concrete time from all time")
   })
   
-  output$optimumResult <- renderTable ({
-    ## TODO
+  output$optimumResult <- renderText ({
+    optimumCriterionDataInput()
   })
   
 })

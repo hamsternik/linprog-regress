@@ -25,5 +25,5 @@ shinyUI(pageWithSidebar(
       tabPanel("Result", uiOutput("optimumResult")),
       tabPanel("Plot", uiOutput("optimumPlot"))
     )
-  )
-))
+  ))
+)

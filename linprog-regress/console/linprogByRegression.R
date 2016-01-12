@@ -229,4 +229,3 @@ optimizedCriterion <- as.numeric(stateAndControlVecOfCoefficients %*% criterionR
 print("Show optimized criterial variable as X11: ")
 print(optimizedCriterion)
 ###
-
