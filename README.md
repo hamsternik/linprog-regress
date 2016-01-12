@@ -1,4 +1,6 @@
-# linear programming optimization problem involving linear regression
+## linear programming optimization problem involving linear regression
+
+[![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE)
 
 Project based on building linear regression models which involving as a main part of linear programming task
 
