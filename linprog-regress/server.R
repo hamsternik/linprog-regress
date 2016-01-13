@@ -247,7 +247,7 @@ shinyServer(function(input, output, session) {
     lastStateConstantVec <- c()
     stateRegressPartOfConstantValues <- (stateRegressDataInput()$first)[,( ((dim((stateRegressDataInput()$first)))[2]) - (dim(additionMatrixDataInput())[2]) + 1 ):(dim((stateRegressDataInput()$first)))[2]]
     for (i in 1:dim(stateRegressPartOfConstantValues)[1]) {
-      lastStateConstantVec <- append(lastStateConstantVec, ((timePointDataInput() %*% stateRegressPartOfConstantValues[i,]) + stateRegressConstants[i]))
+      lastStateConstantVec <- append(lastStateConstantVec, ((timePointDataInput() %*% stateRegressPartOfConstantValues[i,]) + stateRegressDataInput()$second[i]))
     }
     
     return(lastStateConstantVec)
@@ -268,7 +268,7 @@ shinyServer(function(input, output, session) {
     return(lp$x)
   })
   
-  optimumCriterionDataInput <- reactive({
+  criterionOptimumDataInput <- reactive({
     return(as.numeric(linprogDataInput() %*% criterionRegressForLP() + modifiedCriterionRegressConstantsDataInput()))
   })
   
@@ -280,6 +280,9 @@ shinyServer(function(input, output, session) {
   })
   output$extendedMatrixTable <- renderTable({
     extendedMatrixDataInput()
+  })
+  output$linprogOtimizationCoefTable <- renderTable({
+    as.matrix(linprogDataInput())
   })
   
   ### Data Table Render
@@ -308,25 +311,23 @@ shinyServer(function(input, output, session) {
   })
   
   ### Text Render Through UI Render
+  output$timeLineTitle <- renderUI({
+    if (is.null(rawExcelDataInput()) || is.null(input$cn))
+      HTML(paste("<b>", "Waiting...", "</b>"))
+    else
+      HTML(paste("<b>", "Enter number of concrete time from ", ((dim(mainMatrixDataInput())[1]) - 1), " time points: ", "</b>"))
+  })
   output$criterionCoefTitle <- renderUI({
     HTML(paste("<b>", "Regression coefficients of criterion variables", "</b>"))
   })
   output$stateCoefTitle <- renderUI({
     HTML(paste("<b>", "Regression coefficients of state variables", "</b>"))
   })
-  timeLineTitleReactive <- reactive({
-    if (is.null(rawExcelDataInput()) || is.null(input$cn))
-      HTML(paste("<b>", "Waiting...", "</b>"))
-    else
-      HTML(paste("<b>", "Enter number of concrete time from ", ((dim(mainMatrixDataInput())[1]) - 1), " time points: ", "</b>"))
+  output$linprogOtimizationCoefTitle <- renderUI({
+    HTML(paste("<b>", "Linprog optimization coefficients", "</b>"))
   })
-  output$timeLineTitle <- renderUI({
-    timeLineTitleReactive()
-  })
-  
-  ### Text Render
-  output$optimumResult <- renderText({
-    optimumCriterionDataInput()
+  output$criterionOptimum <- renderUI({
+    HTML(paste("Criterion optimazed value is: ", "<b>", criterionOptimumDataInput(), "</b>"))
   })
   
 })

@@ -24,12 +24,18 @@ shinyUI(pageWithSidebar(
                  )
         ),
         tabPanel("Extended Matrix", tableOutput("extendedMatrixTable")),
-        tabPanel("Optimization Result", 
+        tabPanel("Regression Coefficients", 
                  fluidRow(uiOutput("criterionCoefTitle")),
                  fluidRow(dataTableOutput("criterionCoefTable")),
                  br(),
                  fluidRow(uiOutput("stateCoefTitle")),
                  fluidRow(dataTableOutput("stateCoefTable"))
+        ),
+        tabPanel("Optimization Result",
+                 fluidRow(uiOutput("linprogOtimizationCoefTitle")),
+                 fluidRow(tableOutput("linprogOtimizationCoefTable")),
+                 br(),
+                 fluidRow(uiOutput("criterionOptimum"))
         )
       )
   ))
