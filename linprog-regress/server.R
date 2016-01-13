@@ -150,6 +150,7 @@ shinyServer(function(input, output, session) {
   
   extendedMatrixDataInput <- reactive({
     extendedMatrix <- cbind(additionMatrixDataInput(), mainMatrixDataInput())
+    extendedMatrix <- extendedMatrix[-1, ]
     return(extendedMatrix)
   })
   
@@ -273,10 +274,23 @@ shinyServer(function(input, output, session) {
   
   ################################################################################################
   
+  ### Table Render
   output$excelTable <- renderTable({
     rawExcelDataInput()
   })
+  output$extendedMatrixTable <- renderTable({
+    extendedMatrixDataInput()
+  })
   
+  ### Data Table Render
+  output$criterionCoefTable <- renderDataTable({
+    as.matrix(criterionRegressDataInput()$first)
+  })
+  output$stateCoefTable <- renderDataTable({
+    stateRegressDataInput()$first
+  })
+  
+  ### UI Render
   output$criterion <- renderUI({
     selectizeInput('cn', 'Criterior Variables', choices = mapOfNamesAsDataFrameDataInput(), multiple = TRUE)
   })
@@ -287,15 +301,31 @@ shinyServer(function(input, output, session) {
     selectizeInput('cl', 'Control Variables', choices = mapOfNamesAsDataFrameDataInput(), multiple = TRUE)
   })
   output$timeLine <- renderUI({
-    numericInput('timeLine1', '', 2, 2, (dim(rawExcelDataInput()))[1])
+    if (is.null(rawExcelDataInput()))
+      return(NULL)
+    else
+      numericInput('timeLine1', '', 2, 2, (dim(rawExcelDataInput()))[1])
   })
   
-  output$timeLineTitle <- renderText({
-    #str1 <- paste("Enter number of concrete time from ", (dim(mainMatrix)[1]), " all time: ")
-    print("Enter number of concrete time from all time")
+  ### Text Render Through UI Render
+  output$criterionCoefTitle <- renderUI({
+    HTML(paste("<b>", "Regression coefficients of criterion variables", "</b>"))
+  })
+  output$stateCoefTitle <- renderUI({
+    HTML(paste("<b>", "Regression coefficients of state variables", "</b>"))
+  })
+  timeLineTitleReactive <- reactive({
+    if (is.null(rawExcelDataInput()) || is.null(input$cn))
+      HTML(paste("<b>", "Waiting...", "</b>"))
+    else
+      HTML(paste("<b>", "Enter number of concrete time from ", ((dim(mainMatrixDataInput())[1]) - 1), " time points: ", "</b>"))
+  })
+  output$timeLineTitle <- renderUI({
+    timeLineTitleReactive()
   })
   
-  output$optimumResult <- renderText ({
+  ### Text Render
+  output$optimumResult <- renderText({
     optimumCriterionDataInput()
   })
   

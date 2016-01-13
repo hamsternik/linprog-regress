@@ -15,15 +15,22 @@ shinyUI(pageWithSidebar(
   ),
   
   mainPanel(
-    tabsetPanel(
-      tabPanel("Table", tableOutput("excelTable")),
-      tabPanel("Variable Control", 
-               fluidRow(
-                 column(5, uiOutput("criterion"), uiOutput("state"), uiOutput("control")),
-                 column(4, textOutput("timeLineTitle"), uiOutput("timeLine"))
-      )),
-      tabPanel("Result", uiOutput("optimumResult")),
-      tabPanel("Plot", uiOutput("optimumPlot"))
-    )
+      tabsetPanel(
+        tabPanel("Table", tableOutput("excelTable")),
+        tabPanel("Variable Control", 
+                 fluidRow(
+                   column(5, uiOutput("criterion"), uiOutput("state"), uiOutput("control")),
+                   column(3, uiOutput("timeLineTitle"), uiOutput("timeLine"))
+                 )
+        ),
+        tabPanel("Extended Matrix", tableOutput("extendedMatrixTable")),
+        tabPanel("Optimization Result", 
+                 fluidRow(uiOutput("criterionCoefTitle")),
+                 fluidRow(dataTableOutput("criterionCoefTable")),
+                 br(),
+                 fluidRow(uiOutput("stateCoefTitle")),
+                 fluidRow(dataTableOutput("stateCoefTable"))
+        )
+      )
   ))
 )
